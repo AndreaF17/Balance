@@ -9,54 +9,52 @@ import com.classes.Item;
 import com.classes.TypeOfPayment;
 import com.util.FileManager;
 
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-@SuppressWarnings("unchecked")
 
 public class TotalExpenseController implements Initializable{
-
-    private static final LocalDate dateNow = LocalDate.now();
-
+    private LocalDate date;
     @FXML
     private Label label_month;
 
     @FXML
     private TableView<Item> tableView;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initData(LocalDate date) {
         Float americanExpressTot = (float) 0;
         Float bancomatGtot = (float) 0;
         Float bancomatPtot = (float) 0;
         Float visaTot = (float) 0;
         Float cashTot = (float) 0;
         for (Expense expense : FileManager.getExpenseList()) {
-            switch (expense.getCard()) {
-                case AmericanExpress:
-                    americanExpressTot += expense.getValue();
-                    break;
-                case BancomatG:
-                    bancomatGtot += expense.getValue();
-                    break;
-                case BancomatP:
-                    bancomatPtot += expense.getValue();
-                    break;
-                case Visa:
-                    visaTot += expense.getValue();
-                    break;
-                case Contante:
-                    cashTot += expense.getValue();
-                    break;          
-                default:
-                    break;
+            if (expense.getDate().getMonth() == date.getMonth()) {
+                switch (expense.getCard()) {
+                    case AmericanExpress:
+                        americanExpressTot += expense.getValue();
+                        break;
+                    case BancomatG:
+                        bancomatGtot += expense.getValue();
+                        break;
+                    case BancomatP:
+                        bancomatPtot += expense.getValue();
+                        break;
+                    case Visa:
+                        visaTot += expense.getValue();
+                        break;
+                    case Contante:
+                        cashTot += expense.getValue();
+                        break;          
+                    default:
+                        break;
+                }
+    
             }
-
-        label_month.setText("Mese: " + dateNow.toString());
+            
+        label_month.setText("Mese: " + date.toString());
             
             TableColumn<Item, TypeOfPayment> typeColumn = new TableColumn<Item, TypeOfPayment>("Tipo Pagamento");
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
@@ -77,5 +75,9 @@ public class TotalExpenseController implements Initializable{
             
             
         }
+      }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
     }
 }

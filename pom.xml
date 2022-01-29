@@ -43,6 +43,14 @@
       <artifactId>json</artifactId>
       <version>20211205</version>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/net.harawata/appdirs -->
+    <dependency>
+      <groupId>net.harawata</groupId>
+      <artifactId>appdirs</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -73,6 +81,15 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.0.2</version>
+          <configuration>
+            <archive>
+              <manifest>
+                <addClasspath>true</addClasspath>
+                <classpathPrefix>lib/</classpathPrefix>
+                <mainClass>com.MainApp</mainClass>
+              </manifest>
+            </archive>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
@@ -90,6 +107,19 @@
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <configuration>
+            <archive>
+              <manifest>
+                <mainClass>com.MainApp</mainClass>
+              </manifest>
+            </archive>
+            <descriptorRefs>
+              <descriptorRef>jar-with-dependencies</descriptorRef>
+            </descriptorRefs>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>

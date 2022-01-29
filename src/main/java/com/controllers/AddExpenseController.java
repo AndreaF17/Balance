@@ -48,8 +48,7 @@ public class AddExpenseController implements Initializable {
                 if (isNumber(tf_value.getText())) {
                     Expense expense = new Expense(UUID.randomUUID().toString(), datePicker.getValue(), tf_name.getText(), Float.parseFloat(tf_value.getText()), cbx_type.getSelectionModel().getSelectedItem());
                     System.out.println(expense);
-                    if(MainWindowController.getInstance().addExpense(expense)) {
-                        FileManager.saveExpense(expense);
+                    if(MainWindowController.getInstance().addExpense(expense) && FileManager.saveExpense(expense)) {
                         Node  source = (Node)  event.getSource(); 
                         Stage stage  = (Stage) source.getScene().getWindow();
                         stage.close();

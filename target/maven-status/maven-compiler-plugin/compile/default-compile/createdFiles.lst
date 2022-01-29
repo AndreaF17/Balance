@@ -1,11 +1,14 @@
 com\controllers\AddExpenseController.class
-com\controllers\AddExpenseController$2.class
 com\classes\Expense.class
+com\controllers\TotalExpenseController$1.class
 com\controllers\AddExpenseController$1.class
+com\App.class
 com\MainApp.class
 com\classes\TypeOfPayment.class
+com\classes\Item.class
 com\controllers\MainWindowController.class
 com\util\CheckInternet.class
 module-info.class
 com\util\FileManager.class
 com\util\DBmanager.class
+com\controllers\TotalExpenseController.class

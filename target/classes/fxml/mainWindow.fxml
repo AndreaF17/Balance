@@ -27,7 +27,8 @@
           <Menu mnemonicParsing="false" text="Estratti">
             <items>
               <MenuItem fx:id="totalExpensesThisMonth" mnemonicParsing="false" onAction="#onClick_totalExpensesThisMonth" text="Questo mese" />
-                  <MenuItem fx:id="totalExpensesCustomRange" mnemonicParsing="false" onAction="#onClick_totalExpensesCustomRange" text="Seleziona mese" />
+                <MenuItem fx:id="totalExpensesLastMonth" mnemonicParsing="false" onAction="#onClick_totalExpensesCustomRange" text="Mese scorso" />
+                <MenuItem fx:id="totalExpensesCustomMonth" mnemonicParsing="false" onAction="#onClick_totalExpensesCustomRange" text="Seleziona mese" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
