@@ -139,8 +139,7 @@ public class FileManager {
             }
             myReader.close();
           } catch (FileNotFoundException e) {
-            System.out.println("FileManager: An error occurred.");
-            e.printStackTrace();
+            createFile();
           }
           System.out.println("FileManager: Read - " + data);
           return data;

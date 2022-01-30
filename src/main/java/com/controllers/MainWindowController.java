@@ -197,7 +197,7 @@ public class MainWindowController implements Initializable {
 
         searchByDay.setDisable(true);
         searchByName.setDisable(true);
-        totalExpensesCustomMontn.setDisable(true);
+        //totalExpensesCustomMontn.setDisable(true);
         // connectionThread = new CheckInternet();
         // connectionThread.setDaemon(true);
         // connectionThread.start();
