@@ -4,19 +4,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
-
 import com.classes.Expense;
 
-
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import net.harawata.appdirs.AppDirs;
@@ -85,49 +81,45 @@ public class FileManager {
             System.out.println("FileManager: An error occurred.");
             e.printStackTrace();
           }
-          System.out.println("FileManager: Read - " + data);
+          System.out.println("FileManager: Read CFG file - " + data);
           return data;
         }
     public static String getFilePath() {
         return readCfgFile() + "\\" + FILE_NAME; 
     }
 
-    public static boolean createFile() {
+    public static boolean createFile() throws IOException {
         File file = new File(Path.of(getFilePath()).toUri());
         if (file.exists()) {
             System.out.println("FileManager: File already exist.");
         } else {
-            try {
                 if(file.createNewFile()) {
                     System.out.println("FileManager: "+ FILE_NAME +" crated.");
                 } else {
                     System.out.println("FileManager: "+ FILE_NAME +" already created.");
-                }
-            } catch (IOException e) {
-                System.out.println("FileManager: Error during cration of file: " + FILE_NAME);
-                e.printStackTrace();
-                return false;
-            }
+                }       
         }
         return true;
     }
 
     public static boolean writeFile(String string) {
-        if(createFile()) {
+        
             try {
-                File file = new File(getFilePath());
-                FileWriter writer = new FileWriter(file);
-                writer.write(string);
-                writer.close();
-                System.out.println("FileManager: "+ FILE_NAME +" wrote successfully.");
+                if(createFile()) {
+                    File file = new File(getFilePath());
+                    FileWriter writer = new FileWriter(file);
+                    writer.write(string);
+                    writer.close();
+                    System.out.println("FileManager: "+ FILE_NAME +" wrote successfully.");
+                }
             } catch (IOException e) {
                 System.out.println("FileManager: Writing error for "+ FILE_NAME +".");
                 return false;
             }
             return true;
-        }
-        return false;
     }
+
+    
     
     public static String readFile() {
         String data = null;
@@ -139,7 +131,14 @@ public class FileManager {
             }
             myReader.close();
           } catch (FileNotFoundException e) {
-            createFile();
+              try {
+                createFile();
+              } catch (IOException ex) {
+                System.out.println("FileManager: Reading error.");
+                e.printStackTrace();
+                
+              }
+            
           }
           System.out.println("FileManager: Read - " + data);
           return data;

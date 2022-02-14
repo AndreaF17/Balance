@@ -18,16 +18,17 @@
               <MenuItem fx:id="addExpense" mnemonicParsing="false" onAction="#onClick_addExpense" text="Aggiungi spesa" />
             </items>
           </Menu>
-            <Menu mnemonicParsing="false" text="Cerca">
+            <Menu mnemonicParsing="false" text="Filtra">
                <items>
-                  <MenuItem fx:id="searchByName" mnemonicParsing="false" onAction="#onClick_searchByName" text="Per nome" />
-                  <MenuItem fx:id="searchByDay" mnemonicParsing="false" onAction="#onClick_searchByDay" text="Per giorno" />
+                <MenuItem fx:id="thisMonthTransactions" mnemonicParsing="false" onAction="#onClick_thisMonthTransactions" text="Questo mese" />
+                  <MenuItem fx:id="lastMonthTransactions" mnemonicParsing="false" onAction="#onClick_lastMonthTransactions" text="Mese scorso" />
+                  <MenuItem fx:id="allTransactions" mnemonicParsing="false" onAction="#onClick_allTransactions" text="Tutte le transazioni" />
                </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Estratti">
             <items>
               <MenuItem fx:id="totalExpensesThisMonth" mnemonicParsing="false" onAction="#onClick_totalExpensesThisMonth" text="Questo mese" />
-                <MenuItem fx:id="totalExpensesLastMonth" mnemonicParsing="false" onAction="#onClick_totalExpensesCustomRange" text="Mese scorso" />
+                <MenuItem fx:id="totalExpensesLastMonth" mnemonicParsing="false" onAction="#onClick_totalExpensesLastMonth" text="Mese scorso" />
                 <MenuItem fx:id="totalExpensesCustomMonth" mnemonicParsing="false" onAction="#onClick_totalExpensesCustomRange" text="Seleziona mese" />
             </items>
           </Menu>
@@ -38,7 +39,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <Label fx:id="lb_connection" layoutX="537.0" layoutY="370.0" text="Internet:" AnchorPane.bottomAnchor="7.5" AnchorPane.rightAnchor="30.0" />
+      <Label fx:id="lb_filter" layoutX="537.0" layoutY="370.0" text="Filtro:" AnchorPane.bottomAnchor="7.5" AnchorPane.rightAnchor="30.0" />
       <TableView fx:id="tableView" layoutX="14.0" layoutY="34.0" prefHeight="437.0" prefWidth="975.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="30.0">
         <columns>
         

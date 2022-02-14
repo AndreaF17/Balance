@@ -1,7 +1,7 @@
 package com.controllers;
 
 import java.io.File;
-import java.net.URI;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -39,6 +39,8 @@ import javafx.stage.Stage;
 
 public class MainWindowController implements Initializable {
 
+    private List<Expense> filteredList;
+
     private static MainWindowController instance;
 
     public MainWindowController() {
@@ -50,9 +52,18 @@ public class MainWindowController implements Initializable {
     }
 
     private List<Image> imageList;
+
+    @FXML
+    private MenuItem thisMonthTransactions;
+
+    @FXML
+    private MenuItem lastMonthTransactions;
+
+    @FXML
+    private MenuItem allTransactions;
     
     @FXML
-    private Label lb_connection;
+    private Label lb_filter;
 
     @FXML
     private ImageView imgView_connection;
@@ -65,12 +76,6 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private MenuItem addExpense;
-
-    @FXML
-    private MenuItem searchByDay;
-
-    @FXML
-    private MenuItem searchByName;
 
     @FXML
     private MenuItem totalExpensesCustomMontn;
@@ -103,13 +108,22 @@ public class MainWindowController implements Initializable {
             tableView.getItems().remove(tableView.getSelectionModel().getSelectedItem());
             tableView.refresh();
             }
-
         }
     }
 
     @FXML
     void onClick_totalExpensesCustomMonth(ActionEvent event) {
-
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/customRangeDialog.fxml"));
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Nuova spesa");
+            stage.getIcons().add(new Image(App.class.getResourceAsStream("/img/expenses.png")));
+            stage.setScene(new Scene(root));  
+            stage.show();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -118,19 +132,9 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
-    void onClick_searchByDay(ActionEvent event) {
-
-    }
-
-    @FXML
-    void onClick_searchByName(ActionEvent event) {
-
-    }
-
-    @FXML
     void onClick_totalExpensesCustomRange(ActionEvent event) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/totalExpense.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/customRangeDialog.fxml"));
             Parent root = (Parent) fxmlLoader.load();
             Stage stage = new Stage();
             stage.setTitle("Nuova spesa");
@@ -147,26 +151,92 @@ public class MainWindowController implements Initializable {
         loadTotalExpence(LocalDate.now());
     }
 
+    @FXML
+    void onClick_thisMonthTransactions(ActionEvent event) {
+        thisMonthTransactions.setDisable(true);
+        lastMonthTransactions.setDisable(false);
+        allTransactions.setDisable(false);
+
+        filteredList = new ArrayList<Expense>();
+        for (Expense expense : FileManager.getExpenseList()) {
+            if (expense.getDate().getMonth().equals(LocalDate.now().getMonth()) && expense.getDate().getYear() == LocalDate.now().getYear()) {
+                filteredList.add(expense);
+            }
+        }
+
+        tableView.getItems().clear();
+        tableView.getItems().addAll(filteredList);
+
+        lb_filter.setText("Filtro: Transazioni di questo mese");
+
+    }
+
+    @FXML
+    void onClick_lastMonthTransactions(ActionEvent event) {
+        lastMonthTransactions.setDisable(true);
+        thisMonthTransactions.setDisable(false);
+        allTransactions.setDisable(false);
+
+        filteredList = new ArrayList<Expense>();
+        for (Expense expense : FileManager.getExpenseList()) {
+            if (expense.getDate().getMonth().equals(LocalDate.now().getMonth().minus(1)) && expense.getDate().getYear() == LocalDate.now().getYear()) {
+                filteredList.add(expense);
+            }
+        }
+
+        tableView.getItems().clear();
+        tableView.getItems().addAll(filteredList);
+
+        lb_filter.setText("Filtro: Transazioni del mese scorso");
+    }
+
+    @FXML
+    void onClick_allTransactions(ActionEvent event) {
+        allTransactions.setDisable(true);
+        lastMonthTransactions.setDisable(false);
+        thisMonthTransactions.setDisable(false);
+
+        tableView.getItems().clear();
+        tableView.getItems().addAll(FileManager.getExpenseList());
+
+        lb_filter.setText("Filtro: Tutte le transazioni");
+        
+    }
+
     @Override
-    public void initialize(URL arg0, ResourceBundle arg1) {
-            File jsonSettings = new File(FileManager.getAppdataDirPath() + FileManager.getCfgFileName());
+    public void initialize(URL arg0, ResourceBundle arg1) {    
+        File jsonSettings = new File(FileManager.getAppdataDirPath() + FileManager.getCfgFileName());
+        Alert alert = new Alert(AlertType.INFORMATION, "Seleziona dove salvare il file delle spese", ButtonType.OK);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         if (!jsonSettings.exists() || jsonSettings.length() == 0) {
-            Alert alert = new Alert(AlertType.INFORMATION, "Seleziona dove salvare il file delle spese", ButtonType.OK);
-            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-            stage.getIcons().add(
+           stage.getIcons().add(
                 new Image(this.getClass().getResource("/img/expenses.png").toString()));
             alert.showAndWait();
             if (alert.getResult() == ButtonType.OK) {
                 try {
-                jsonSettings.createNewFile();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    jsonSettings.createNewFile();
+                } catch (IOException e) {
+                    System.out.println("File not found.");
                 }
                 FileManager.writeCfgFile(browseDirectory().toString());
             } else {
                 System.exit(0);
             }
+        } else {
+            if (!(new File(FileManager.readCfgFile()).exists())) {
+                stage.getIcons().add(
+                        new Image(this.getClass().getResource("/img/expenses.png").toString()));
+                    alert.showAndWait();
+                    if (alert.getResult() == ButtonType.OK) {
+                        FileManager.writeCfgFile(browseDirectory().toString());
+                    } else {
+                        System.exit(0);
+                    }
+            }
         }
+        
+
+        
         
         TableColumn<Expense, LocalDate> dataColumn = new TableColumn<Expense, LocalDate>("Data acquisto");
         dataColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -180,27 +250,23 @@ public class MainWindowController implements Initializable {
         TableColumn<Expense, TypeOfPayment> typeOfPaymentColumn = new TableColumn<Expense, TypeOfPayment>("Tipo di pagamento");
         typeOfPaymentColumn.setCellValueFactory(new PropertyValueFactory<>("card"));
 
-        
         tableView.getColumns().addAll(dataColumn, nameColumn, valueColumn, typeOfPaymentColumn);
+        filteredList = new ArrayList<Expense>();
+
 
         for (Expense expense : FileManager.getExpenseList()) {
-            addExpense(expense);
+            if (expense.getDate().getMonth().equals(LocalDate.now().getMonth()) && expense.getDate().getYear() == LocalDate.now().getYear()) {
+                filteredList.add(expense);
+            }
         }
-        
-        imageList = new ArrayList<Image>();
-        imageList.add(new Image(App.class.getResourceAsStream("/img/green_tick.png")));
-        imageList.add(new Image(App.class.getResourceAsStream("/img/red_tick.png")));
-        imgView_connection.setFitHeight(15);
-        imgView_connection.setFitWidth(15);
-        lb_connection.setVisible(false);
-        imgView_connection.setVisible(false);
 
-        searchByDay.setDisable(true);
-        searchByName.setDisable(true);
-        //totalExpensesCustomMontn.setDisable(true);
-        // connectionThread = new CheckInternet();
-        // connectionThread.setDaemon(true);
-        // connectionThread.start();
+        tableView.getItems().addAll(filteredList);
+        dataColumn.setSortType(TableColumn.SortType.DESCENDING);
+        tableView.getSortOrder().add(dataColumn);
+        tableView.sort();
+
+        lb_filter.setText("Filtro: Transazioni di questo mese");
+        thisMonthTransactions.setDisable(true);
          
     }
 
