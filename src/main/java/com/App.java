@@ -31,7 +31,7 @@ public class App extends Application {
         stage.setTitle(title);
         stage.setScene(scene);
         stage.getIcons().add(new Image(App.class.getResourceAsStream("/img/expenses.png")));
-        stage.setFullScreen(true);
+        stage.setMaximized(true);
         stage.show();
     }
 
